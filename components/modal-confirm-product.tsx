@@ -11,6 +11,7 @@ import { Button } from "./ui/button"
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from "react"
 import { Customer, GlobalContext } from "@/context/global-context"
 import { Input } from "./ui/input"
+import { formatCurrency } from "@/utils/formatCurrency";
 
 
 
@@ -36,9 +37,16 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
     const [quantity, setQuantity] = useState(1);
     const [discount, setDiscount] = useState(0);
 
-    function handleConfirm(product: Product) {1
-        addProductToBucket({...product, price: (product.price - discount)}, quantity, discount);
+    function handleConfirm(product: Product) {
+        addProductToBucket({ ...product, price: (product.price - discount) }, quantity, discount);
         toast.success(`${product.name} foi adicionado ao orçamento`);
+        setIsConfirmOpen(false);
+        setSelectedProduct(null);
+        setQuantity(1);
+        setDiscount(0);
+    }
+
+    function handleCancel() {
         setIsConfirmOpen(false);
         setSelectedProduct(null);
         setQuantity(1);
@@ -61,7 +69,7 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
                         {product.name}
                     </span>
                     <span className="text-start">
-                        R$ {product.price}
+                        {formatCurrency(product.price)}
                     </span>
                 </Button>
             </DialogTrigger>
@@ -70,7 +78,7 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
                     <DialogHeader>
                         <DialogTitle className="text-center">Adicionar Produto</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         <div className="grid grid-cols-5 text-sm">
                             <span>
                                 Código
@@ -98,18 +106,30 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
                                 {selectedProduct.name}
                             </span>
                             <span className="text-start">
-                                R$ {selectedProduct.price}
+                                {formatCurrency(selectedProduct.price)}
                             </span>
                         </div>
-                        <div className="flex gap-4">
-                            <Input placeholder="Quantidade" type='number' onChange={(e) => setQuantity(Number(e.target.value))} />
-                            <Input placeholder="Desconto" type='number' onChange={(e) => setDiscount(Number(e.target.value))} />
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-sm">
+                                    Quantidade
+                                </span>
+                                <Input placeholder="Quantidade" type='number' defaultValue={quantity} onChange={(e) => setQuantity(Number(e.target.value))} />
+                            </div>
+
+                            <div className="space-y-2">
+                                <span className="text-sm">
+                                    Desconto
+                                </span>
+                                <Input placeholder="Desconto" type='number' defaultValue={discount} onChange={(e) => setDiscount(Number(e.target.value))} />
+                            </div>
                         </div>
-                        <div className="flex w-full justify-center gap-4">
+                        <div className="flex w-full justify-center gap-4 pt-4">
                             <Button onClick={() => handleConfirm(selectedProduct)}>
                                 Confirmar
                             </Button>
-                            <Button variant="outline">
+                            <Button variant="outline" onClick={() => handleCancel()}>
                                 Cancelar
                             </Button>
                         </div>

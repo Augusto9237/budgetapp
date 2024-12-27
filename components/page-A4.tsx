@@ -14,13 +14,14 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Key, useContext } from "react";
 import { BucketProduct, GlobalContext } from "@/context/global-context";
 import { ModalEditProduct } from "./modal-edit-product copy";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 interface PageA4Props {
     budget: Budget
 }
 
 export function PageA4({ budget }: PageA4Props) {
-    const { selectedCustomer, productsBucket } = useContext(GlobalContext);
+    const { selectedCustomer, productsBucket, removeProductFromBudget} = useContext(GlobalContext);
 
     function calculateTotal(items: BucketProduct[]): number {
         return items.reduce((total, item) => total + ((item.product.price * item.quantity)), 0);
@@ -62,7 +63,7 @@ export function PageA4({ budget }: PageA4Props) {
                             <TableHead className="h-8 px-4 text-black text-xs font-semibold">Ref.</TableHead>
                             <TableHead className="h-8 px-4 text-black text-xs font-semibold">Nome</TableHead>
                             <TableHead className="h-8 px-4 text-black text-xs font-semibold">Qtd</TableHead>
-                            <TableHead className="h-8 px-4 text-black text-xs font-semibold">Preço Un.</TableHead>
+                            <TableHead className="h-8 px-4 text-black text-xs font-semibold">Preço</TableHead>
                             <TableHead className="h-8 px-4 text-black text-xs font-semibold">Subtotal</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -75,14 +76,14 @@ export function PageA4({ budget }: PageA4Props) {
                                         <TableCell className="h-8 text-xs px-4">{item.product.reference}</TableCell>
                                         <TableCell className="h-8 text-xs px-4">{item.product.name}</TableCell>
                                         <TableCell className="text-center h-8 text-xs">{item.quantity}</TableCell>
-                                        <TableCell className="h-8 text-xs px-4">R$ {item.product.price}</TableCell>
-                                        <TableCell className="h-8 text-xs px-4">R$ {item.quantity * item.product.price}</TableCell>
+                                        <TableCell className="h-8 text-xs px-4">{formatCurrency(item.product.price)}</TableCell>
+                                        <TableCell className="h-8 text-xs px-4">{formatCurrency(item.quantity * item.product.price)}</TableCell>
                                     </TableRow>
                                 </PopoverTrigger>
 
                                 <PopoverContent className="fixed left-[17.4rem] -top-[2.8rem] p-2 space-x-2 max-w-24">
-                                   <ModalEditProduct product={item.product} quantityEdit={item.quantity} discountEdit={item.discount}/>
-                                    <Button variant="outline" className="h-7 w-7 text-red-500 hover:text-red-600">
+                                    <ModalEditProduct product={item.product} quantityEdit={item.quantity} discountEdit={item.discount} />
+                                    <Button variant="outline" onClick={() => removeProductFromBudget(item.product.code)} className="h-7 w-7 text-red-500 hover:text-red-600">
                                         <Trash2 />
                                     </Button>
                                 </PopoverContent>
@@ -92,7 +93,7 @@ export function PageA4({ budget }: PageA4Props) {
                     </TableBody>
                 </Table>
                 <div className="font-semibold text-end w-full text-sm">
-                    <span>Total: R$ {calculateTotal(productsBucket)}</span>
+                    <span>Total: {formatCurrency(calculateTotal(productsBucket))}</span>
                 </div>
             </div>
 

@@ -9,9 +9,10 @@ import {
 import { toast } from 'react-hot-toast';
 import { Button } from "./ui/button"
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from "react"
-import { Customer, GlobalContext } from "@/context/global-context"
+import { GlobalContext } from "@/context/global-context"
 import { Input } from "./ui/input"
 import { Pencil } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 
 
@@ -52,6 +53,13 @@ export function ModalEditProduct({ product, quantityEdit, discountEdit }: ModalC
         setDiscount(0);
     }
 
+    function handleCancel() {
+        setIsConfirmOpen(false);
+        setSelectedProduct(null);
+        setQuantity(1);
+        setDiscount(0);
+    }
+
     return (
         <Dialog open={isConfirmOpen} onOpenChange={() => setIsConfirmOpen(open => !open)}>
             <DialogTrigger asChild>
@@ -64,7 +72,7 @@ export function ModalEditProduct({ product, quantityEdit, discountEdit }: ModalC
                     <DialogHeader>
                         <DialogTitle className="text-center">Editar Produto</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         <div className="grid grid-cols-5 text-sm">
                             <span>
                                 Código
@@ -92,18 +100,29 @@ export function ModalEditProduct({ product, quantityEdit, discountEdit }: ModalC
                                 {selectedProduct.name}
                             </span>
                             <span className="text-start">
-                                R$ {selectedProduct.price}
+                                {formatCurrency(selectedProduct.price)}
                             </span>
                         </div>
-                        <div className="flex gap-4">
-                            <Input placeholder="Quantidade" type='number' defaultValue={quantity} onChange={(e) => setQuantity(Number(e.target.value))} />
-                            <Input placeholder="Desconto" type='number' defaultValue={discount} onChange={(e) => setDiscount(Number(e.target.value))} />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-sm">
+                                    Quantidade
+                                </span>
+                                <Input placeholder="Quantidade" type='number' defaultValue={quantity} onChange={(e) => setQuantity(Number(e.target.value))} />
+                            </div>
+
+                            <div className="space-y-2">
+                                <span className="text-sm">
+                                    Desconto
+                                </span>
+                                <Input placeholder="Desconto" type='number' defaultValue={discount} onChange={(e) => setDiscount(Number(e.target.value))} />
+                            </div>
                         </div>
-                        <div className="flex w-full justify-center gap-4">
+                        <div className="flex w-full justify-center gap-4 pt-4">
                             <Button onClick={() => handleConfirm(selectedProduct)}>
                                 Confirmar
                             </Button>
-                            <Button variant="outline">
+                            <Button variant="outline" onClick={() => handleCancel()}>
                                 Cancelar
                             </Button>
                         </div>

@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import toast from 'react-hot-toast';
 export type Customer = {
   cnpj: string;
   businessName: string;
@@ -77,13 +78,19 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // se não, adicione o produto à lista
     setProductsBuckets((prev) => [...prev, { product, quantity, discount }]);
     return;
   };
 
+  const removeProductFromBudget = (productCode: string) => {
+    setProductsBuckets((prev) =>
+        prev.filter((product) => product.product.code !== productCode),
+    );
+    toast.error('Produto removido do orçamento')
+};
+
   return (
-    <GlobalContext.Provider value={{ productsBucket, selectedCustomer, setSelectedCustomer, addProductToBucket }}>
+    <GlobalContext.Provider value={{ productsBucket, selectedCustomer, setSelectedCustomer, addProductToBucket, removeProductFromBudget }}>
       {children}
     </GlobalContext.Provider>
   );
