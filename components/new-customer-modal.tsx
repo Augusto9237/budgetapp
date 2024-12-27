@@ -121,7 +121,7 @@ export function NewCustomerModal() {
                             name="tradeName"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Razão Social</FormLabel>
+                                    <FormLabel>Nome Fantasia</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Digite o Nome Fantasia" {...field} />
                                     </FormControl>
@@ -135,7 +135,7 @@ export function NewCustomerModal() {
                             name="buyer"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Razão Social</FormLabel>
+                                    <FormLabel>Responsável</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Digite o nome do responsavel" {...field} />
                                     </FormControl>
@@ -149,7 +149,7 @@ export function NewCustomerModal() {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Razão Social</FormLabel>
+                                    <FormLabel>E-mail</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Digite o E-mail" {...field} />
                                     </FormControl>
@@ -162,7 +162,7 @@ export function NewCustomerModal() {
                             name="contact"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Razão Social</FormLabel>
+                                    <FormLabel>Telefone</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Digite o Telefone" {...field} />
                                     </FormControl>
