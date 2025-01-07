@@ -61,7 +61,7 @@ export function ModalEditProduct({ product, quantityEdit, discountEdit }: ModalC
     }
 
     return (
-        <Dialog open={isConfirmOpen} onOpenChange={() => setIsConfirmOpen(open => !open)}>
+        <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline" className="h-7 w-7">
                     <Pencil />
