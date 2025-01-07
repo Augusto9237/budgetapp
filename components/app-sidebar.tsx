@@ -26,7 +26,7 @@ import { ModalAddProduct } from "./modal-add-product"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <>
-      <Sidebar collapsible="icon" {...props} className="mt-14">
+      <Sidebar collapsible="icon" {...props} className="mt-14 bg-background/30">
         <SidebarContent className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
@@ -45,17 +45,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           </SidebarMenu>
           <Separator />
-        </SidebarContent><SidebarFooter>
+        </SidebarContent>
+        <SidebarFooter>
           <SidebarMenu className="pb-14">
             <SidebarMenuItem>
-              <SidebarMenuButton className="group/collapsible bg-primary justify-center text-white pl-2">
+              <SidebarMenuButton className="group/collapsible bg-primary text-white">
                 <Save className="" />
                 <span>Salvar</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton className="group/collapsible justify-center pl-2">
+              <SidebarMenuButton className="group/collapsible">
                 <SaveOff className="" />
                 <span>Cancelar</span>
               </SidebarMenuButton>

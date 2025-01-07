@@ -70,7 +70,7 @@ export function NewBudgetModal({ budgets }: newBudgetProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="bg-sky-700 hover:bg-sky-800 gap-2" size="sm">
+                <Button  size="sm">
                     <FilePlus2 size={16} />
                     Novo orçamento
                 </Button>
