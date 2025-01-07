@@ -15,20 +15,22 @@ import { ActionsButtons } from "./actions-buttons";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { FileDown, FilePenLine, FileText, FileX, FileX2, Printer } from "lucide-react";
+import { Enterprise } from "@prisma/client";
 
 
 interface BudgetListProps {
     budgets: Budget[];
+    enterprises: Enterprise[];
 }
 
-export function BudgetList({ budgets }: BudgetListProps) {
+export function BudgetList({ budgets, enterprises }: BudgetListProps) {
     return (
         <div className="w-full space-y-4">
             <div className="flex justify-between items-center gap-4">
                 <form className="w-full max-w-md">
                     <Input className="bg-white" type="text" placeholder="Pesquisar orçamento por CNPJ/CPF" />
                 </form>
-                <NewBudgetModal budgets={budgets} />
+                <NewBudgetModal enterprises={enterprises} />
             </div>
             <Card>
                 <Table>

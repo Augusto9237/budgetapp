@@ -34,43 +34,44 @@ import { Input } from "@/components/ui/input"
 
 import { Button } from "@/components/ui/button";
 import { FilePlus2 } from "lucide-react"
-import { Budget } from "@/app/budgets/page"
+import { Enterprise } from "@prisma/client"
+import { createBudget } from "@/actions/budgets"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
-    enterprise: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
-    customer: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
+    enterprise: z.string().min(0, {
+        message: "Selecione uma empresa",
     }),
 })
 
 
 interface newBudgetProps {
-    budgets: Budget[];
+    enterprises: Enterprise[];
 }
 
 
-export function NewBudgetModal({ budgets }: newBudgetProps) {
-
+export function NewBudgetModal({ enterprises }: newBudgetProps) {
+    const route = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             enterprise: "",
-            customer: "",
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await createBudget(Number(values.enterprise))
+            route.push(`/budgets/${response.id}`)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button  size="sm">
+                <Button size="sm">
                     <FilePlus2 size={16} />
                     Novo orçamento
                 </Button>
@@ -94,9 +95,11 @@ export function NewBudgetModal({ budgets }: newBudgetProps) {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="CNPJ1">Empresa 1</SelectItem>
-                                            <SelectItem value="CNPJ2">Empresa 2</SelectItem>
-                                            <SelectItem value="CNPJ3">Empresa 3</SelectItem>
+                                            {enterprises.map((enterprise) => (
+                                                <SelectItem key={enterprise.id} value={`${enterprise.id}`}>
+                                                    {enterprise.businessName}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormDescription>

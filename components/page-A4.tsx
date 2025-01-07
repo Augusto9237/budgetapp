@@ -1,5 +1,4 @@
 'use client'
-import { Budget, BudgetItem } from "@/app/budgets/page";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/lib/formateDate";
 import Image from "next/image";
@@ -15,13 +14,21 @@ import { Key, useContext } from "react";
 import { BucketProduct, GlobalContext } from "@/context/global-context";
 import { ModalEditProduct } from "./modal-edit-product copy";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { Budget, Prisma } from "@prisma/client";
 
 interface PageA4Props {
-    budget: Budget
+    budget: Prisma.BudgetGetPayload<{
+        include: {
+            enterprise: true,
+            items: {
+                include: { product: true }
+            }
+        }
+    }> | null
 }
 
 export function PageA4({ budget }: PageA4Props) {
-    const { selectedCustomer, productsBucket, removeProductFromBudget} = useContext(GlobalContext);
+    const { selectedCustomer, productsBucket, removeProductFromBudget } = useContext(GlobalContext);
 
     function calculateTotal(items: BucketProduct[]): number {
         return items.reduce((total, item) => total + ((item.product.price * item.quantity)), 0);
@@ -29,16 +36,16 @@ export function PageA4({ budget }: PageA4Props) {
     return (
         <div className="bg-white min-w-[595px] w-[595px] min-h-[842px] h-[842px] shadow-md px-7 py-5 space-y-4 relative">
             <div className="flex gap-2">
-                <Image src={`/${budget.enterprise.logo}`} width={100} height={100} alt="logo" className="object-contain" />
+                <Image src={`/${budget?.enterprise.logoUrl}`} width={100} height={100} alt="logo" className="object-contain" />
                 <div className="border border-black w-full p-2">
-                    <h1 className="font-bold">{budget.enterprise.corporate_reason}</h1>
-                    <p className="text-sm font-bold">CNPJ: {budget.enterprise.CNPJ}  I.E: {budget.enterprise.IE}</p>
-                    <p className="text-sm">{budget.enterprise.address}, {budget.enterprise.city}-{budget.enterprise.state}</p>
+                    <h1 className="font-bold">{budget?.enterprise.businessName}</h1>
+                    <p className="text-sm font-bold">CNPJ: {budget?.enterprise.cnpj}  I.E: {budget?.enterprise.id}</p>
+                    <p className="text-sm">{budget?.enterprise.neighborhood}, {budget?.enterprise.city}-{budget?.enterprise.state}</p>
                 </div>
             </div>
 
             <div className="flex flex-col w-full text-center">
-                <h1 className="font-semibold max-auto">Orçamento Nº {budget.id}</h1>
+                <h1 className="font-semibold max-auto">Orçamento Nº {budget?.id}</h1>
                 {selectedCustomer && (
                     <div>
                         <div className="text-sm">

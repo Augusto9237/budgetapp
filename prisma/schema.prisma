@@ -18,7 +18,14 @@ model Enterprise {
   owner        String
   contact      String
   email        String   @unique
-  budgets      Budget[] 
+  logoUrl      String
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        String
+  zipCode      String
+  budgets      Budget[]
 }
 
 model Customer {
@@ -29,26 +36,33 @@ model Customer {
   buyer        String
   contact      String
   email        String   @unique
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        String
+  zipCode      String
   budgets      Budget[]
 }
 
 model Product {
-  id          Int    @id @default(autoincrement())
-  code        String @unique
+  id          Int     @id @default(autoincrement())
+  code        String  @unique
   name        String
   reference   String
   brand       String
   description String
-  price       Float
-  items       Item[]  
+  basePrice   Float
+  items       Item[]
 }
 
+
 model Budget {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   enterpriseId Int
-  customerId   Int
+  customerId   Int?
   enterprise   Enterprise @relation(fields: [enterpriseId], references: [id])
-  customer     Customer   @relation(fields: [customerId], references: [id])
+  customer     Customer?  @relation(fields: [customerId], references: [id])
   status       String
   items        Item[]
 }
