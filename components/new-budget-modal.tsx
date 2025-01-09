@@ -67,8 +67,14 @@ export function NewBudgetModal({ enterprises }: newBudgetProps) {
         }
     }
 
+
+    function handleCancel() {
+        setIsOpen(false)
+        form.reset()
+    }
+
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={() => setIsOpen(open => !open)}>
             <DialogTrigger asChild>
                 <Button size="sm">
                     <FilePlus2 size={16} />
@@ -110,7 +116,7 @@ export function NewBudgetModal({ enterprises }: newBudgetProps) {
                         />
                         <div className="flex gap-4 justify-center">
                             <Button type="submit">Salvar</Button>
-                            <Button variant="secondary" onClick={() => setIsOpen(false)}>Cancelar</Button>
+                            <Button variant="secondary" onClick={handleCancel}>Cancelar</Button>
                         </div>
 
                     </form>
