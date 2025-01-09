@@ -29,14 +29,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-
-import { Input } from "@/components/ui/input"
-
 import { Button } from "@/components/ui/button";
 import { FilePlus2 } from "lucide-react"
 import { Enterprise } from "@prisma/client"
 import { createBudget } from "@/actions/budgets"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 const formSchema = z.object({
     enterprise: z.string().min(0, {
@@ -51,6 +49,7 @@ interface newBudgetProps {
 
 
 export function NewBudgetModal({ enterprises }: newBudgetProps) {
+    const [isOpen, setIsOpen] = useState(false)
     const route = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -78,7 +77,7 @@ export function NewBudgetModal({ enterprises }: newBudgetProps) {
             </DialogTrigger>
             <DialogContent className="max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Novo Orçamento</DialogTitle>
+                    <DialogTitle className="text-center">Novo Orçamento</DialogTitle>
                 </DialogHeader>
 
                 <Form {...form}>
@@ -109,7 +108,11 @@ export function NewBudgetModal({ enterprises }: newBudgetProps) {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Salvar</Button>
+                        <div className="flex gap-4 justify-center">
+                            <Button type="submit">Salvar</Button>
+                            <Button variant="secondary" onClick={() => setIsOpen(false)}>Cancelar</Button>
+                        </div>
+
                     </form>
                 </Form>
             </DialogContent>

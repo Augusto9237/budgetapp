@@ -13,8 +13,16 @@ export async function createBudget(enterpriseId: number): Promise<Budget> {
     return response
 }
 
-export async function getBudgets(): Promise<Budget[]> {
-    const response = await prismaClient.budget.findMany()
+export async function getBudgets(){
+    const response = await prismaClient.budget.findMany({
+        include: {
+            enterprise: true,
+            customer: true,
+            items: {
+                include: {product: true}
+            }
+        }
+    })
     return response
 }
 
@@ -25,6 +33,7 @@ export async function getBudgetById(id: number){
         },
         include: {
             enterprise: true,
+            customer: true,
             items: {
                 include: {product: true}
             }

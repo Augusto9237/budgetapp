@@ -1,4 +1,3 @@
-import { Budget } from "@/app/budgets/page";
 import {
     Table,
     TableBody,
@@ -15,15 +14,27 @@ import { ActionsButtons } from "./actions-buttons";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { FileDown, FilePenLine, FileText, FileX, FileX2, Printer } from "lucide-react";
-import { Enterprise } from "@prisma/client";
+import { Enterprise, Prisma } from "@prisma/client";
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils";
+
 
 
 interface BudgetListProps {
-    budgets: Budget[];
+    budgets: Prisma.BudgetGetPayload<{
+        include: {
+            enterprise: true,
+            customer: true,
+            items: {
+                include: { product: true }
+            }
+        }
+    }>[];
     enterprises: Enterprise[];
 }
 
 export function BudgetList({ budgets, enterprises }: BudgetListProps) {
+
     return (
         <div className="w-full space-y-4">
             <div className="flex justify-between items-center gap-4">
@@ -42,43 +53,49 @@ export function BudgetList({ budgets, enterprises }: BudgetListProps) {
                             <TableHead>Fantasia</TableHead>
                             <TableHead>Valor</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead></TableHead>
+                            <TableHead className="text-right pr-[4.6rem]">•••</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {budgets.map((budget) => (
                             <TableRow key={budget.id}>
                                 <TableCell className="h-12">{budget.id}</TableCell>
-                                <TableCell className="h-12">{budget.customer.CNPJ}</TableCell>
-                                <TableCell className="h-12">{budget.customer.name}</TableCell>
-                                <TableCell className="h-12">{budget.customer.fantasy}</TableCell>
-                                <TableCell className="h-12">R$ {budget.total}</TableCell>
+                                <TableCell className="h-12">{budget.customer?.cnpj}</TableCell>
+                                <TableCell className="h-12">{budget.customer?.businessName}</TableCell>
+                                <TableCell className="h-12">{budget.customer?.tradeName}</TableCell>
+                                <TableCell className="h-12">R$ 0</TableCell>
                                 <TableCell className="h-12">
-                                    {budget.status === "IN_PROCESS" && (<p className="text-blue-500">Em processo</p>)}
-                                    {budget.status === "SENT" && (<p className="text-orange-400">Enviado</p>)}
-                                    {budget.status === "APPROVED" && (<p className="text-green-500">Aprovado</p>)}
-                                    {budget.status === "REJECTED" && (<p className="text-red-600">Rejeitado</p>)}
+                                    <Badge
+                                        className={cn('p-0 px-2 py-1 rounded-sm ',
+                                            budget.status === "IN_PROCESS" && "bg-muted hover:bg-muted text-sky-700",
+                                            budget.status === "SENT" && "bg-yellow-500/25 hover:bg-yellow-500/30 text-yellow-700",
+                                            budget.status === "APPROVED" && "bg-sky-500/25 hover:bg-sky-500/30 text-sky-700",
+                                            budget.status === "PAID" && "bg-green-500/25 hover:bg-green-500/30 text-green-700",
+                                            budget.status === "OWZING" && "bg-red-50/25 hover:bg-red-50/30 text-red-700"
+                                        )}
+                                    >
+                                        {budget.status === "IN_PROCESS" && "Em processo"}
+                                        {budget.status === "SENT" && "Enviado"}
+                                        {budget.status === "APPROVED" && "Aprovado"}
+                                        {budget.status === "PAID" && "Pago"}
+                                        {budget.status === "OWZING" && "Ag. pagamento"}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell className="h-12">
-                                    <ActionsButtons>
-                                        <div className="flex flex-col gap-2">
-                                            <Button variant="outline" className="w-full h-9 gap-2">
-                                                <FileDown size={14} />
-                                                Exportar
-                                            </Button>
+                                    <div className="flex gap-2 w-full justify-end items-center">
+                                        <Button size='sm'  variant="outline">
+                                            <FileDown />
+                                        </Button>
 
-                                            <Link href={`/budgets/${budget.id}`} className="w-full">
-                                                <Button className="w-full h-9 gap-2">
-                                                    <FilePenLine size={14} />
-                                                    Editar
-                                                </Button>
-                                            </Link>
-                                            <Button className="w-full h-9 gap-2" variant="destructive">
-                                                <FileX size={14} />
-                                                Excluir
+                                        <Link href={`/budgets/${budget.id}`} className="">
+                                            <Button size='sm'  variant="outline">
+                                                <FilePenLine />
                                             </Button>
-                                        </div>
-                                    </ActionsButtons>
+                                        </Link>
+                                        <Button size='sm' variant="outline" >
+                                            <FileX />
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

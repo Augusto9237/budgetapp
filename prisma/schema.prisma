@@ -11,51 +11,53 @@ datasource db {
 }
 
 model Enterprise {
-  id           Int      @id @default(autoincrement())
-  cnpj         String   @unique
-  businessName String
-  tradeName    String
-  owner        String
-  contact      String
-  email        String   @unique
-  logoUrl      String
-  street       String
-  number       String
-  neighborhood String
-  city         String
-  state        String
-  zipCode      String
-  budgets      Budget[]
+  id                Int      @id @default(autoincrement())
+  cnpj              String   @unique
+  stateRegistration String
+  businessName      String
+  tradeName         String
+  owner             String
+  contact           String
+  email             String   @unique
+  logoUrl           String
+  street            String
+  number            String
+  neighborhood      String
+  city              String
+  state             String
+  zipCode           String
+  budgets           Budget[]
 }
 
 model Customer {
-  id           Int      @id @default(autoincrement())
-  cnpj         String   @unique
-  businessName String
-  tradeName    String
-  buyer        String
-  contact      String
-  email        String   @unique
-  street       String
-  number       String
-  neighborhood String
-  city         String
-  state        String
-  zipCode      String
-  budgets      Budget[]
+  id                Int      @id @default(autoincrement())
+  cnpj              String   @unique
+  stateRegistration String
+  businessName      String
+  tradeName         String
+  buyer             String
+  contact           String
+  email             String   @unique
+  street            String
+  number            String
+  neighborhood      String
+  city              String
+  state             String
+  zipCode           String
+  budgets           Budget[]
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
-  code        String  @unique
+  id          Int    @id @default(autoincrement())
+  code        String @unique
   name        String
   reference   String
   brand       String
   description String
+  priceCost   Float
   basePrice   Float
   items       Item[]
 }
-
 
 model Budget {
   id           Int        @id @default(autoincrement())
@@ -74,4 +76,6 @@ model Item {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+  discount  Float
+  total     Float
 }
