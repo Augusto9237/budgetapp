@@ -38,7 +38,7 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
     const [discount, setDiscount] = useState(0);
 
     function handleConfirm(product: Product) {
-        addProductToBucket({ ...product, price: (product.price - discount) }, quantity, discount);
+        addProductToBucket(product, quantity, discount);
         toast.success(`${product.name} foi adicionado ao orçamento`);
         setIsConfirmOpen(false);
         setSelectedProduct(null);
@@ -109,7 +109,7 @@ export function ModalConfirmProduct({ product, selectedProduct, isConfirmOpen, s
                                 {formatCurrency(selectedProduct.price)}
                             </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <span className="text-sm">

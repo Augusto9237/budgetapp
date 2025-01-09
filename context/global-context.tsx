@@ -82,15 +82,51 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     return;
   };
 
-  const removeProductFromBudget = (productCode: string) => {
-    setProductsBuckets((prev) =>
-        prev.filter((product) => product.product.code !== productCode),
+  const updateProductQuantity = (product: Product, quantity: number, discount: number) => {
+    const productIsAlreadyOnBucket = productsBucket.some(
+      (cartProduct) => cartProduct.product.code === product.code,
     );
-    toast.error('Produto removido do orçamento')
-};
+
+    if (productIsAlreadyOnBucket) {
+      setProductsBuckets((prev) =>
+        prev.map((bucketProduct) => {
+          if (bucketProduct.product.code === product.code) {
+
+            return {
+              ...bucketProduct,
+              discount: discount,
+              quantity: quantity,
+            };
+          }
+
+          return bucketProduct;
+        }),
+      );
+      return;
+    }
+
+  }
+
+  const removeProductFromBudget = (productCode: string) => {
+    setProductsBuckets((prev) => {
+      // Filtra o array removendo o produto com o código passado
+      const updatedProducts = prev.filter((product) => product.product.code !== productCode);
+
+      // Se não houver mais produtos, remove o item do localStorage
+      if (updatedProducts.length === 0) {
+        localStorage.removeItem('budget-app/products');
+      }
+
+      // Retorna o array atualizado
+      return updatedProducts;
+    });
+
+    toast.error('Produto removido do orçamento');
+  };
+
 
   return (
-    <GlobalContext.Provider value={{ productsBucket, selectedCustomer, setSelectedCustomer, addProductToBucket, removeProductFromBudget }}>
+    <GlobalContext.Provider value={{ productsBucket, selectedCustomer, setSelectedCustomer, addProductToBucket, updateProductQuantity, removeProductFromBudget }}>
       {children}
     </GlobalContext.Provider>
   );

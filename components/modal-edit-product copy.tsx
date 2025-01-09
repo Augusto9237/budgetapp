@@ -32,36 +32,34 @@ interface ModalConfirmProductProps {
 }
 
 export function ModalEditProduct({ product, quantityEdit, discountEdit }: ModalConfirmProductProps) {
-    const { addProductToBucket } = useContext(GlobalContext);
-    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const { updateProductQuantity } = useContext(GlobalContext);
+    const [isOpen, setIsOpen] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(product);
-    const [quantity, setQuantity] = useState(1);
-    const [discount, setDiscount] = useState(0);
+    const [quantity, setQuantity] = useState(quantityEdit);
+    const [discount, setDiscount] = useState(discountEdit);
 
     useEffect(() => {
         setSelectedProduct(product);
         setQuantity(quantityEdit);
         setDiscount(discountEdit);
-    }, [product, isConfirmOpen]);
+    }, [product, isOpen]);
 
     function handleConfirm(product: Product) {
-        addProductToBucket({ ...product, price: (product.price - discount) }, quantity, discount);
-        toast.success(`${product.name} foi adicionado ao orçamento`);
-        setIsConfirmOpen(false);
-        setSelectedProduct(null);
-        setQuantity(1);
-        setDiscount(0);
+        updateProductQuantity(product, quantity, discount);
+        toast.success(`${product.name} foi alterado no orçamento`);
+        setIsOpen(false);
+
     }
 
     function handleCancel() {
-        setIsConfirmOpen(false);
-        setSelectedProduct(null);
-        setQuantity(1);
-        setDiscount(0);
+        setIsOpen(false);
+        // setSelectedProduct(null);
+        // setQuantity(1);
+        // setDiscount(0);
     }
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={() => setIsOpen(open => !open)}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="h-7 w-7">
                     <Pencil />

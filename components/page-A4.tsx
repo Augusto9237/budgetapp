@@ -45,7 +45,7 @@ export function PageA4({ budget }: PageA4Props) {
     }
 
     function calculateTotal(items: BucketProduct[]): number {
-        return items.reduce((total, item) => total + ((item.product.price * item.quantity)), 0);
+        return items.reduce((total, item) => total + (((item.product.price - item.discount) * item.quantity)), 0);
     }
     return (
         <main className="flex flex-col items-center gap-8 pt-20 pb-5 w-full max-w-screen-lg mx-auto min-h-screen max-h-screen overflow-auto relative">
@@ -102,8 +102,8 @@ export function PageA4({ budget }: PageA4Props) {
                                             <TableCell className="h-8 text-xs px-4">{item.product.reference}</TableCell>
                                             <TableCell className="h-8 text-xs px-4">{item.product.name}</TableCell>
                                             <TableCell className="text-center h-8 text-xs">{item.quantity}</TableCell>
-                                            <TableCell className="h-8 text-xs px-4">{formatCurrency(item.product.price)}</TableCell>
-                                            <TableCell className="h-8 text-xs px-4">{formatCurrency(item.quantity * item.product.price)}</TableCell>
+                                            <TableCell className="h-8 text-xs px-4">{formatCurrency(item.product.price - item.discount)}</TableCell>
+                                            <TableCell className="h-8 text-xs px-4">{formatCurrency((item.product.price - item.discount) * item.quantity)}</TableCell>
                                         </TableRow>
                                     </PopoverTrigger>
 
