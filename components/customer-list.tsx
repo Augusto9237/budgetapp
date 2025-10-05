@@ -1,4 +1,4 @@
-import { Budget } from "@/app/budgets/page";
+
 import {
     Table,
     TableBody,
@@ -36,7 +36,7 @@ export function CustomerList({ customers }: BudgetListProps) {
                 <Table>
                     <TableHeader>
                         <TableRow >
-                            <TableHead>CNPJ/CPF</TableHead>
+                            <TableHead className="w-20">CNPJ/CPF</TableHead>
                             <TableHead>Razão Social</TableHead>
                             <TableHead>Fantasia</TableHead>
                             <TableHead>Comprador</TableHead>
@@ -47,10 +47,10 @@ export function CustomerList({ customers }: BudgetListProps) {
                     <TableBody>
                         {customers.map((customer) => (
                             <TableRow key={customer.cnpj}>
-                                <TableCell className="h-12">{customer.cnpj}</TableCell>
-                                <TableCell className="h-12">{customer.businessName}</TableCell>
+                                <TableCell className="h-12 w-34 text">{customer.cnpj}</TableCell>
+                                <TableCell className="h-12 w-40">{customer.businessName}</TableCell>
                                 <TableCell className="h-12">{customer.tradeName}</TableCell>
-                                <TableCell className="h-12">{customer.buyer}</TableCell>
+                                <TableCell className="h-12 w-36">{customer.buyer}</TableCell>
                                 <TableCell className="h-12">{customer.contact}</TableCell>
                                 <TableCell className="h-12">
                                     <ActionsButtons>

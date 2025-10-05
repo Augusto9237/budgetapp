@@ -21,9 +21,19 @@ import {
 import { Separator } from "./ui/separator"
 import { ModalAddCustomer } from "./modal-add-customer"
 import { ModalAddProduct } from "./modal-add-product"
+import { updateBudget } from "@/actions/budgets"
 
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ id,  ...props }: React.ComponentProps<typeof Sidebar>) {
+  
+ async function updateBudgetFinal() {
+  try {
+    await updateBudget(Number(id), 1, [])
+  } catch (error) {
+    
+  }
+ }
+ 
   return (
     <>
       <Sidebar collapsible="icon" {...props} className="mt-14 bg-background/30">

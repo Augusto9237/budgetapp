@@ -87,7 +87,7 @@ const customers: Customer[] = [
 
 export default function Page() {
     return (
-        <main className="flex flex-col items-center gap-8 pt-20 pb-5 w-full max-w-screen-lg max-lg:px-5 mx-auto min-h-screen max-h-screen overflow-auto">
+        <main className="flex flex-col items-center gap-8 pt-20 pb-5 w-full max-w-screen-xl max-lg:px-5 mx-auto min-h-screen max-h-screen overflow-auto">
             <CustomerList customers={customers} />
         </main>
     );

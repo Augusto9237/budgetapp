@@ -13,11 +13,14 @@ export function Header() {
                     <Link href="/budgets">
                         Orçamentos
                     </Link>
-                    <Link href="/">
+                    <Link href="/customers">
                         Clientes
                     </Link>
                     <Link href="/">
-                        Produtos/Serviços
+                        Produtos
+                    </Link>
+                    <Link href="/">
+                        Serviços
                     </Link>
                     <Link href="/">
                         Empresas

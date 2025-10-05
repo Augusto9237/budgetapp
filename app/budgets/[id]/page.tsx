@@ -5,6 +5,7 @@ import { getBudgetById } from "@/actions/budgets";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const budget = await getBudgetById(Number(params.id))
+    
     return (
         <>
             <AppSidebar />
