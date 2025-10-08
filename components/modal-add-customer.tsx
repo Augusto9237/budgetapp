@@ -112,10 +112,10 @@ export function ModalAddCustomer() {
     return (
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(open => !open)}>
             <DialogTrigger asChild>
-                <SidebarMenuButton className="group/collapsible" >
+                <Button className="max-w-sm">
                     <UserPlus />
                     <span>Adicionar Cliente</span>
-                </SidebarMenuButton>
+                </Button>
             </DialogTrigger>
             <DialogContent className="max-w-screen-md">
                 <DialogHeader>

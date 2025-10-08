@@ -39,9 +39,9 @@ export function BudgetList({ budgets, enterprises }: BudgetListProps) {
         <div className="w-full space-y-4">
             <div className="flex justify-between items-center gap-4">
                 <form className="w-full max-w-md">
-                    <Input className="bg-white" type="text" placeholder="Pesquisar orçamento por CNPJ/CPF" />
+                    <Input className="bg-muted/30"  type="text" placeholder="Pesquisar orçamento por CNPJ/CPF" />
                 </form>
-                <NewBudgetModal enterprises={enterprises} />
+                
             </div>
             <Card>
                 <Table>

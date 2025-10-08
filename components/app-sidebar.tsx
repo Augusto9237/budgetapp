@@ -1,5 +1,5 @@
 "use client"
-import * as React from "react"
+import { useContext } from "react"
 import {
   PackagePlus,
   Save,
@@ -22,18 +22,23 @@ import { Separator } from "./ui/separator"
 import { ModalAddCustomer } from "./modal-add-customer"
 import { ModalAddProduct } from "./modal-add-product"
 import { updateBudget } from "@/actions/budgets"
+import { GlobalContext } from "@/context/global-context"
+import toast from "react-hot-toast"
 
 
-export function AppSidebar({ id,  ...props }: React.ComponentProps<typeof Sidebar>) {
-  
- async function updateBudgetFinal() {
-  try {
-    await updateBudget(Number(id), 1, [])
-  } catch (error) {
-    
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { selectedCustomer, productsBucket, removeProductFromBudget } = useContext(GlobalContext);
+
+  async function updateBudgetFinal() {
+    console.log('updateBudgetFinal', selectedCustomer, productsBucket)
+    try {
+      await updateBudget(1, selectedCustomer.id, productsBucket)
+      toast.success('Orçamento atualizado com sucesso')
+    } catch (error) {
+      console.log(error)
+    }
   }
- }
- 
+
   return (
     <>
       <Sidebar collapsible="icon" {...props} className="mt-14 bg-background/30">
@@ -44,7 +49,7 @@ export function AppSidebar({ id,  ...props }: React.ComponentProps<typeof Sideba
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <ModalAddProduct/>
+              <ModalAddProduct />
             </SidebarMenuItem>
 
             <SidebarMenuItem>
@@ -59,7 +64,7 @@ export function AppSidebar({ id,  ...props }: React.ComponentProps<typeof Sideba
         <SidebarFooter>
           <SidebarMenu className="pb-14">
             <SidebarMenuItem>
-              <SidebarMenuButton className="group/collapsible bg-primary text-white">
+              <SidebarMenuButton className="group/collapsible bg-primary text-white" onClick={updateBudgetFinal}>
                 <Save className="" />
                 <span>Salvar</span>
               </SidebarMenuButton>

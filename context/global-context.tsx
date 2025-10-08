@@ -28,7 +28,7 @@ export const GlobalContext = createContext({} as any); // Initialize with an emp
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [productsBucket, setProductsBuckets] = useState<BucketProduct[]>([])
+  const [productsBucket, setProductsBuckets] = useState<BucketProduct[]>([]);
 
   useEffect(() => {
     const storedCustomer = JSON.parse(localStorage.getItem("selectedCustomer") || '[]')

@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select"
 
 import { Button } from "@/components/ui/button";
-import { FilePlus2 } from "lucide-react"
+import { CirclePlus, FilePlus2 } from "lucide-react"
 import { Enterprise } from "@prisma/client"
 import { createBudget } from "@/actions/budgets"
 import { useRouter } from "next/navigation"
@@ -77,8 +77,8 @@ export function NewBudgetModal({ enterprises }: newBudgetProps) {
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(open => !open)}>
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <FilePlus2 size={16} />
-                    Novo orçamento
+                    <CirclePlus />
+                    Novo
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
