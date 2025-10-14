@@ -14,13 +14,12 @@ import { Key, useContext, useState } from "react";
 import { BucketProduct, GlobalContext } from "@/context/global-context";
 import { ModalEditProduct } from "./modal-edit-product copy";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { Budget, Prisma } from "@prisma/client";
-import { cn } from "@/lib/utils";
-import { Card, CardHeader } from "./ui/card";
+import { Budget, Customer, Prisma } from "@prisma/client";
+import { Card, CardHeader, CardTitle } from "./ui/card";
 import { ModalAddCustomer } from "./modal-add-customer";
 import { ModalAddProduct } from "./modal-add-product";
-import { ButtonGroup } from "./ui/button-group";
-import { DropdownMenu, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Separator } from "./ui/separator";
+import { updateBudget } from "@/actions/budgets";
 
 interface PageA4Props {
     budget: Prisma.BudgetGetPayload<{
@@ -31,21 +30,17 @@ interface PageA4Props {
             }
         }
     }> | null
+    customers: Customer[];
 }
 
-export function BudgetEdit({ budget }: PageA4Props) {
+export function BudgetEdit({ budget, customers }: PageA4Props) {
     const { selectedCustomer, productsBucket, removeProductFromBudget } = useContext(GlobalContext)
-    const [zoom, setZoom] = useState(100)
 
-    function handleZoomIn() {
-        if (zoom < 175) {
-            setZoom(zoom + 25)
-        }
-    }
-
-    function handleZoomOut() {
-        if (zoom > 100) {
-            setZoom(zoom - 25)
+    async function handleUpdateBudget() {
+        try {
+            await updateBudget(budget?.id!, selectedCustomer?.id!, productsBucket)
+        } catch (error) {
+            
         }
     }
 
@@ -55,7 +50,9 @@ export function BudgetEdit({ budget }: PageA4Props) {
     return (
         <main className="flex flex-col items-center gap-8 pt-20 pb-5 w-full max-w-screen-xl px-5 mx-auto min-h-screen max-h-screen overflow-auto">
             <div className="w-full flex-col space-y-5">
-                <h1 className="font-bold mx-auto text-xl">Orçamento Nº {budget?.id}</h1>
+                <div className="w-full text-center">
+                    <h1 className="font-bold mx-auto text-xl">Orçamento Nº {budget?.id}</h1>
+                </div>
                 <Card className="flex gap-4 p-5">
                     <Image src={`/${budget?.enterprise.logoUrl}`} width={100} height={100} alt="logo" className="object-contain" />
                     <div className="w-full text-start">
@@ -66,12 +63,17 @@ export function BudgetEdit({ budget }: PageA4Props) {
                 </Card>
 
                 <Card className="p-5">
-                    <CardHeader className="p-0 text-start mb-5">
-                        <h1>Cliente</h1>
+                    <CardHeader className="p-0 flex flex-row justify-between items-center">
+                        <CardTitle className="text-lg">Cliente</CardTitle>
+                        <ModalAddCustomer edit={!selectedCustomer ? false : true} customers={customers} />
                     </CardHeader>
-                    {/* <span>Nenhum cliente selecionado</span>
-                    <ModalAddCustomer/> */}
-                    {selectedCustomer && (
+                    {!selectedCustomer && (
+                        <div className="w-full flex flex-col gap-5 items-center">
+                            <span>Nenhum cliente selecionado</span>
+                        </div>
+                    )}
+
+                    {selectedCustomer?.businessName && (
                         <div className="w-full">
                             <div className="space-y-1 text-sm">
                                 <div className="flex gap-2 font-semibold">Razão Social:<span className="font-normal">{selectedCustomer.businessName}</span></div>
@@ -89,61 +91,70 @@ export function BudgetEdit({ budget }: PageA4Props) {
                     <CardHeader className="p-0 text-start">
                         <h1>Produtos/Serviços</h1>
                     </CardHeader>
-                    <Table className="text-sm">
+                    <Table className="text-sm w-full">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="h-8 px-4 text-sm font-semibold">Cod.</TableHead>
-                                <TableHead className="h-8 px-4 text-sm font-semibold">Ref.</TableHead>
-                                <TableHead className="h-8 px-4 text-sm font-semibold">Nome</TableHead>
-                                <TableHead className="h-8 px-4 text-sm font-semibold">Qtd</TableHead>
-                                <TableHead className="h-8 px-4 text-sm font-semibold">Preço</TableHead>
-                                <TableHead className="h-8 px-4 text-sm font-semibold max-w-[104px] overflow-hidden">Subtotal</TableHead>
+                                <TableHead className="h-8 max-w-[160px] min-w-[160px] text-sm font-semibold">Cod.</TableHead>
+                                <TableHead className="h-8 max-w-[100px] min-w-[100px] text-sm font-semibold">Ref.</TableHead>
+                                <TableHead className="h-8 px-4 text-sm font-semibold w-full">Nome</TableHead>
+                                <TableHead className="h-8 text-sm font-semibold max-w-[44px] min-w-[44px] ">Qtd</TableHead>
+                                <TableHead className="h-8 text-sm font-semibold max-w-[100px] min-w-[100px]">Preço</TableHead>
+                                <TableHead className="h-8 pl-4 text-sm font-semibold min-w-[120px] max-w-[120px] overflow-hidden">Subtotal</TableHead>
+                                <TableHead />
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {productsBucket.map((item: BucketProduct, i: Key) => (
-                                <TableRow key={i} className="relative">
-                                    <TableCell className="h-8 text-sm px-4">{item.product.code}</TableCell>
-                                    <TableCell className="h-8 text-sm px-4">{item.product.reference}</TableCell>
-                                    <TableCell className="h-8 text-sm px-4">{item.product.name}</TableCell>
-                                    <TableCell className="text-center h-8 text-sm">{item.quantity}</TableCell>
-                                    <TableCell className="h-8 text-sm px-4 max-w-[104px] overflow-hidden">{formatCurrency(item.product.price - item.discount)}</TableCell>
-                                    <TableCell className="h-8 text-sm  max-w-[104px] overflow-hidden bg-amber-500 px-0.5">
-                                        <ButtonGroup className="w-full">
-                                            <Button variant='ghost' className="w-full max-w-[100px]">{formatCurrency((item.product.price - item.discount) * item.quantity)}</Button>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline" size="icon" aria-label="More Options">
-                                                        <MoreHorizontalIcon />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                            </DropdownMenu>
-                                        </ButtonGroup>
+                                <TableRow key={i}>
+                                    <TableCell className="h-8 text-sm max-w-[160px] min-w-[160px]">{item.product.code}</TableCell>
+                                    <TableCell className="h-8 text-sm max-w-[100px] min-w-[100px]">{item.product.reference}</TableCell>
+                                    <TableCell className="h-8 text-sm px-4 w-full flex-1">{item.product.name}</TableCell>
+                                    <TableCell className="h-8 text-sm max-w-[40px] min-w-[40px] ">{item.quantity}</TableCell>
+                                    <TableCell className="h-8 text-sm max-w-[100px] min-w-[100px]  overflow-hidden">{formatCurrency(item.product.price - item.discount)}</TableCell>
+                                    <TableCell className="h-8 text-sm  min-w-[120px] max-w-[120px] overflow-hidden">
+                                        {formatCurrency((item.product.price - item.discount) * item.quantity)}
+                                    </TableCell>
+                                    <TableCell className="px-0 relative">
+                                        <div className="flex gap-2 items-center p-1">
+
+                                            <ModalEditProduct product={item.product} quantityEdit={item.quantity} discountEdit={item.discount} />
+                                            <Button variant="outline" onClick={() => removeProductFromBudget(item.product.code)} className="h-7 w-7 text-red-500 hover:text-red-600">
+                                                <Trash2 />
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
-                                //     </PopoverTrigger>
-
-                                //     <PopoverContent className="fixed -right-0 -top-[2.8rem] p-2 space-x-2 max-w-24">
-                                //         <ModalEditProduct product={item.product} quantityEdit={item.quantity} discountEdit={item.discount} />
-                                //         <Button variant="outline" onClick={() => removeProductFromBudget(item.product.code)} className="h-7 w-7 text-red-500 hover:text-red-600">
-                                //             <Trash2 />
-                                //         </Button>
-                                //     </PopoverContent>
-
-                                // </Popover>
                             ))}
                         </TableBody>
                     </Table>
                     <ModalAddProduct />
-                    {/* <div className="font-semibold text-end w-full text-sm">
-                        <span>Total: {formatCurrency(calculateTotal(productsBucket))}</span>
-                    </div> */}
                 </Card>
 
-                <div className="text-center text-sm absolute bottom-4 left-0 right-0">
-                    <h1 className="font-semibold">{formatDate(new Date())}, Belém - Pa</h1>
-                </div>
+                <Card className="p-5">
+                    <CardHeader className="p-0">
+                        <CardTitle className="text-lg">Resumo</CardTitle>
+                    </CardHeader>
+                    <div>
+                        <div className="w-full flex justify-between items-center my-2">
+                            <span>Subtotal:</span>
+                            <span className="">{formatCurrency(calculateTotal(productsBucket))}</span>
+                        </div>
+                        <div className="w-full flex justify-between items-center mb-2">
+                            <span>Desconto:</span>
+                            <span className="">{formatCurrency(0)}</span>
+                        </div>
+                        <Separator className="my-5"/>
+                        <div className="flex justify-between items-center font-bold">
+                            <span>Total:</span>
+                            <span>{formatCurrency(calculateTotal(productsBucket))}</span>
+                        </div>
+                    </div>
+                </Card>
             </div>
-        </main>
+            <div className="grid grid-cols-2 gap-5">
+                <Button variant='outline' className="text-primary">Cancelar</Button>
+                <Button>Salvar</Button>
+            </div>
+        </main >
     )
 }

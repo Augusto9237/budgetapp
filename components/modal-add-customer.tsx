@@ -10,96 +10,17 @@ import { UserPlus } from "lucide-react"
 import { SidebarMenuButton } from "./ui/sidebar"
 import { Button } from "./ui/button"
 import { useState, useContext } from "react"
-import { Customer, GlobalContext } from "@/context/global-context"
+import {GlobalContext } from "@/context/global-context"
 
 import { toast } from 'react-hot-toast';
+import { Customer } from "@prisma/client"
 
-const customers: Customer[] = [
-    {
-        cnpj: "12.345.678/0001-90",
-        businessName: "Food SA",
-        tradeName: "Northern Delights",
-        buyer: "John Smith",
-        contact: "(555) 123-4567",
-        email: "john.smith@delights.com",
-    },
-    {
-        cnpj: "23.456.789/0001-01",
-        businessName: "Advanced Technology Ltd.",
-        tradeName: "Tech Solutions",
-        buyer: "Jane Doe",
-        contact: "(555) 987-6543",
-        email: "jane.doe@techsolutions.com",
-    },
-    {
-        cnpj: "34.567.890/0001-12",
-        businessName: "Construction and Renovations EIRELI",
-        tradeName: "Prime Builders",
-        buyer: "Michael Brown",
-        contact: "(555) 234-5678",
-        email: "michael.brown@primebuilders.com",
-    },
-    {
-        cnpj: "45.678.901/0001-23",
-        businessName: "Quick Transport ME",
-        tradeName: "Fast Transports",
-        buyer: "Emily Davis",
-        contact: "(555) 345-6789",
-        email: "emily.davis@fasttransports.com",
-    },
-    {
-        cnpj: "56.789.012/0001-34",
-        businessName: "Clothing Store Ltd.",
-        tradeName: "Fashion Store",
-        buyer: "William Garcia",
-        contact: "(555) 456-7890",
-        email: "william.garcia@fashionstore.com",
-    },
-    {
-        cnpj: "67.890.123/0001-45",
-        businessName: "Plastic Industry SA",
-        tradeName: "Plastics Master",
-        buyer: "Olivia Wilson",
-        contact: "(555) 567-8901",
-        email: "olivia.wilson@plasticsmaster.com",
-    },
-    {
-        cnpj: "78.901.234/0001-56",
-        businessName: "Total Security ME",
-        tradeName: "Secure Protection",
-        buyer: "David Martinez",
-        contact: "(555) 678-9012",
-        email: "david.martinez@secureprotection.com",
-    },
-    {
-        cnpj: "89.012.345/0001-67",
-        businessName: "Renewable Energy Ltd.",
-        tradeName: "EcoEnergy",
-        buyer: "Sophia Taylor",
-        contact: "(555) 789-0123",
-        email: "sophia.taylor@ecoenergy.com",
-    },
-    {
-        cnpj: "90.123.456/0001-78",
-        businessName: "Business Consulting EIRELI",
-        tradeName: "Business Solutions",
-        buyer: "James Anderson",
-        contact: "(555) 890-1234",
-        email: "james.anderson@businesssolutions.com",
-    },
-    {
-        cnpj: "01.234.567/0001-89",
-        businessName: "Education and Training SA",
-        tradeName: "Learn More",
-        buyer: "Isabella Thomas",
-        contact: "(555) 901-2345",
-        email: "isabella.thomas@learnmore.com",
-    },
-];
+interface ModalCustomerProps {
+    edit: boolean
+    customers: Customer[]
+}
 
-
-
-export function ModalAddCustomer() {
+export function ModalAddCustomer({ edit, customers }: ModalCustomerProps) {
     const { setSelectedCustomer } = useContext(GlobalContext);
     const [isOpen, setIsOpen] = useState(false)
 
@@ -112,9 +33,9 @@ export function ModalAddCustomer() {
     return (
         <Dialog open={isOpen} onOpenChange={() => setIsOpen(open => !open)}>
             <DialogTrigger asChild>
-                <Button className="max-w-sm">
+                <Button className="max-w-sm" variant={edit ? 'outline' : 'default'}>
                     <UserPlus />
-                    <span>Adicionar Cliente</span>
+                    <span>{edit ? 'Alterar' : 'Adicionar'} Cliente</span>
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-screen-md">
